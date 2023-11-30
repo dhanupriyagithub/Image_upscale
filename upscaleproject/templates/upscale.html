@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        h1{
+            text-align: center;
+            font-size: 40px;
+            font-family:cursive;
+            color: revert;
+            padding-top: 30px;
+        }
+        body{
+            background-image: url('https://img.freepik.com/free-vector/3d-triangle-background-with-vivid-colors_23-2148403816.jpg?w=740&t=st=1680688031~exp=1680688631~hmac=6e448d7666443d41a124c6948e82f16286b0ccf2ed87b4c86c38776c3fda12a4');
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+        img{
+            padding-bottom: 20px;
+        } 
+        #id_file{
+            width: 500px;
+            height:50px;
+            font-size: 18px;   
+        }
+        .flex-parent {
+            display: flex;
+        }
+        .jc-center {
+             justify-content: center;
+        }
+        #myProgress {
+            width: 100%;
+            margin-bottom: 20px;
+            background-color: #ddd;
+            display: none;
+        }
+        #myBar {
+        width: 1%;
+        height: 20px;
+        background-color: #04AA6D;
+        text-align: center;
+        font: bold;
+        }
+        .error{
+            color:red;
+            font-family: cursive;
+            align-items: center;
+            font-size: 20px;
+            padding: 0px 0px 0px 370px; 
+            animation: hide-text 2s linear forwards;
+
+        }
+        @keyframes hide-text {
+            0% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+            }
+    </style>
+        <script>
+            var i = 0;
+            function move() {
+            document.getElementById("myProgress").style.display='block'
+            if (i == 0) {
+                i = 1;
+                var elem = document.getElementById("myBar");
+                var width = 1;
+                var id = setInterval(frame, 10);
+                function frame() {
+                if (width >= 100) {
+                    clearInterval(id);
+                    i = 0;
+                } else {
+                    width++;
+                    elem.style.width = width + "%";
+                    elem.innerHTML = width  + "%";
+                }
+                } 
+          }
+        }  
+        function thank() {
+                window.location.href = "https://www.example.com/newpage";
+            }
+        </script>
+</head>
+<body>
+    <h1>Upscale and Enhance Your Images for FREE</h1>
+        <div style="text-align: center;">
+            <img id="output" width="200px" />   
+        </div>
+        {% if error_message %}
+        <div  class="text-container">
+            <p class="error">{{ error_message }}</p>
+        </div>             
+       {% endif %}
+        <form method="POST" class="post-form" enctype="multipart/form-data" style="width:200px; margin: 0 auto;" onchange="loadFile(event)"> 
+        {% csrf_token %}
+        <label for="id_image"></label>
+        <input type="file" name="image" required id="image-input" accept="image/*" onclick="validateImage(this)">
+        <br>
+        <p id="error-message" style="display: none; color: red;">Please upload an image with size 900 x 900 pixels.</p>
+        <br><br>
+        <div id="myProgress">
+            <div id="myBar">Process... 0%</div>
+         </div>
+         <div class="flex-parent jc-center">
+            <button type="submit" name="btn1" id="btn" class="save btn btn-default"  onclick="move()" style="width:200px; height:40px; font-size: 20px; font-family: cursive; ">2x</button><br><br>
+         </div> 
+         <br>
+        <div class="flex-parent jc-center">
+            <button type="submit" name="btn2" id="btn" class="save btn btn-default"  onclick="move()" style="width:200px; height:40px; font-size: 20px; font-family: cursive; ">3x</a></button><br>
+        </div> 
+        <br>
+        <div class="flex-parent jc-center">
+            <button type="submit" name="btn3" id="btn" class="save btn btn-default"  onclick="move()" style="width:200px; height:40px; font-size: 20px; font-family: cursive; ">4x</button><br>
+        </div> 
+        <br>     
+        <div class="flex-parent jc-center">
+            <button type="submit" name="btn4" id="btn"  class="save btn btn-default"  onclick="move()" style="width:200px; height:40px; font-size: 20px; font-family: cursive; ">8x</button>
+        </div>
+         {% if upscaled_image %}
+            <hr>
+            <h2>Upscaled Image</h2>
+            <a href="{{ upscaled_image_url }}" download >Download Upscaled Image</a>
+            <br>
+            <img src="{{ upscaled_image_url }}">
+        {% endif %}
+    </form>
+
+    <script>
+        var loadFile = function(event) {
+            var image = document.getElementById('output');
+            image.src = URL.createObjectURL(event.target.files[0]);
+        };
+    </script>
+    <script>
+        function validateImage(input) {
+          if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+              var image = new Image();
+              image.src = e.target.result;
+              image.onload = function() {
+                if (this.width !== 900 || this.height !== 900) {
+                  document.getElementById('error-message').style.display = 'block';
+                  document.getElementById('image-input').value = ''; 
+                } else {
+                  document.getElementById('error-message').style.display = 'none';
+                }
+              };
+            };
+            reader.readAsDataURL(input.files[0]);
+          }
+        }
+        </script>
+
+</body>
+</html>
